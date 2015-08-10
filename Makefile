@@ -1,7 +1,6 @@
 .PHONY: all clean
 
 all: example.go sched.y.go ming.go
-	go fmt
 	go build ming.go
 	go build example.go
 	./example
@@ -16,13 +15,13 @@ clean:
 	rm -f ming.y
 
 example.go: example.l
-	golex -t $< | gofmt > $@
+	go generate example_test.go
 
 sched.y.go: sched.y
 	go tool yacc -o $@ $<
 
 ming.go: ming.y
-	go tool yacc -o $@ $<
+	go generate ming_test.go 
 
 ming.y: ming.ebnf
 	ebnf2y -pkg gen -start Operand -o $@ $< 
